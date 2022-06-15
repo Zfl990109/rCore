@@ -9,7 +9,7 @@
 
 - 按照指导书安装好 `WSL2`，并安装好 `ubuntu`
 
-- 在 `Windows` 下安装好 `vscode`，在 `ubuntu` 的 `.bashrc` 文件中添加 `alias code="/mnt/d/Microsoft VS Code/Code.exe"` ，接下lai就可以直接在命令行输入 `code` 来打开 `Windows` 下的 `vscode` 写代码
+- 在 `Windows` 下安装好 `vscode`，在 `ubuntu` 的 `.bashrc` 文件中添加 `alias code="/mnt/d/Microsoft VS Code/Code.exe"` ，接下来就可以直接在命令行输入 `code` 来打开 `Windows` 下的 `vscode` 写代码
 
 - 更换 ubuntu 源
 
