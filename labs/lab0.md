@@ -21,9 +21,8 @@
   export PATH=$PATH:$HOME/riscv64-unknown-elf-toolchain-10.2.0-2020.12.8-x86_64-linux-ubuntu14/bin
   ```
 
-- 安装 gdb-dashboard，安装细节按照官网
-
 - `git clone https://github.com/rcore-os/rCore-Tutorial-v3.git` 将 `rCore` 项目 克隆到本地
+
 
 ### 关于 rCore 本地编译运行时出现的问题以及解决方案
 
