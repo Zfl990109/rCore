@@ -120,24 +120,6 @@
 - 为 `SimpleLogger` 实现 Log 特性
 
   ```
-  fn level_to_color_code(level: Level) -> u8 {
-      match level {
-          Level::Error => 31, // Red
-          Level::Warn => 93,  // BrightYellow
-          Level::Info => 34,  // Blue
-          Level::Debug => 32, // Green
-          Level::Trace => 90, // BrightBlack
-      }
-  }
-  // 在字符串中加入对应的颜色标记
-  macro_rules! with_color {
-      ($args: ident, $color_code: ident) => {{
-          format_args!("\x1b[{}m{}\x1b[0m", $color_code as u8, $args)
-      }};
-  }
-  fn print_in_color(args: fmt::Arguments, color_code: u8) {
-      crate::console::print(with_color!(args, color_code));
-  }
   impl Log for SimpleLogger {
       fn enabled(&self, _metadata: &Metadata) -> bool {
           true
@@ -158,7 +140,7 @@
       fn flush(&self) {}
   }
   ```
-
+  
 - 初始化 LOGGER，使用 `lazy_static!` 以及 `static ref` 使得一开始并不会创建 `LOGGER` ，只有运行到`main.rs` 中调用 `logging::init()` 时才会根据命令行输入的指令初始化 `LOGGER`
 
   ```
