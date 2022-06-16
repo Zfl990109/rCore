@@ -132,7 +132,7 @@
   }
   // 在字符串中加入对应的颜色标记
   macro_rules! with_color {
-      ($args: ident, $color_code: ident) => {{
+      ($args: ident, $color_code: ident) => /\{\{/
           format_args!("\x1b[{}m{}\x1b[0m", $color_code as u8, $args)
       /\}\}/;
   }
