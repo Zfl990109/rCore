@@ -18,7 +18,7 @@
 
 - 固件加电自检，加载 `bootloader` ，跳转到 `bootloader` 
 
-  <img src="C:\Users\zfl\Desktop\rCore\assets\lab1\qemu加电.PNG" style="zoom: 80%;" />
+  <img src="..\assets\lab1\qemu加电.PNG" style="zoom: 80%;" />
 
 - `bootloader` 加载内核镜像，跳转至内核 `rust_main` 函数（绝对地址 `0x80200000`），是 `entry.asm` 中的 `_start` 函数，不是之后在内核中定义的 `rust_main` 函数
 
@@ -79,7 +79,7 @@
 
 - 根据 `linker_qemu.ld` 以及 `entry.asm` 文件中定义的标签，编译链接的内核文件的布局如下，其中内核栈为 `64KB` 
 
-![](C:\Users\zfl\Desktop\rCore\assets\lab1\内存布局.jpg)
+![](..\assets\lab1\内存布局.jpg)
 
 ### 基于 SBI 服务完成输出和关机
 
@@ -132,9 +132,9 @@
   }
   // 在字符串中加入对应的颜色标记
   macro_rules! with_color {
-      ($args: ident, $color_code: ident) => \{\{
+      ($args: ident, $color_code: ident) => {{
           format_args!("\x1b[{}m{}\x1b[0m", $color_code as u8, $args)
-      \}\};
+      /\}\}/;
   }
   fn print_in_color(args: fmt::Arguments, color_code: u8) {
       crate::console::print(with_color!(args, color_code));
@@ -175,5 +175,5 @@
 
 - 实验结果
 
-  ![](C:\Users\zfl\Desktop\rCore\assets\lab1\lab1结果.PNG)
+  ![](..\assets\lab1\lab1结果.PNG)
 
