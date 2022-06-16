@@ -133,7 +133,7 @@
   macro_rules! with_color {
       ($args: ident, $color_code: ident) => {{
           format_args!("\x1b[{}m{}\x1b[0m", $color_code as u8, $args)
-      }};
+      /\}\}/;
   }
   fn print_in_color(args: fmt::Arguments, color_code: u8) {
       crate::console::print(with_color!(args, color_code));
