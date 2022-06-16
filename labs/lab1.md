@@ -131,7 +131,7 @@
       }
   }
   // 在字符串中加入对应的颜色标记
-  // 注意：发布到 github pages 时 '{{' 会导致 build failed，复制时请自行去除
+  // 注意：发布到 github pages 时，liang'ge会导致 build failed，复制时请自行去除
   macro_rules! with_color {
       ($args: ident, $color_code: ident) => /\{\{/
           format_args!("\x1b[{}m{}\x1b[0m", $color_code as u8, $args)
