@@ -17,7 +17,7 @@
     extern crate user_lib;
     ```
 
-  - `console.rs` 同内核相似，为 `Srdout` 实现 `Write` 特性时，不再使用 `console_putchar` 函数，而是使用 `lib.rs` 提供的系统调用 `write`
+  - `console.rs` 同内核相似，为 `Stdout` 实现 `Write` 特性时，不再使用 `console_putchar` 函数，而是使用 `lib.rs` 提供的系统调用 `write`
 
     ```
     impl Write for Stdout {
@@ -383,4 +383,4 @@
 
 - 实验结果，通过所有用户测例
 
-  ![](../assets/lab2/lab2实验结果.png)
+  <img src="../assets/lab2/lab2实验结果.png"  />
