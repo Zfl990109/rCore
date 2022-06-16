@@ -383,4 +383,4 @@
 
 - 实验结果，通过所有用户测例
 
-  <img src="../assets/lab2/lab2实验结果.png"  />
+  <img src="../assets/lab2/lab2实验结果.PNG"  />
