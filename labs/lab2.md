@@ -2,7 +2,7 @@
 
 ### 简介
 
-- 关于 rCore-Tutorial-Book 第一章的一些笔记
+- 关于 rCore-Tutorial-Book 第二章的一些笔记
 - 请搭配 rCore-Tutorial-Book 食用
 
 ### 应用程序设计
