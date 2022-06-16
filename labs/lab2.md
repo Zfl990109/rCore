@@ -7,7 +7,7 @@
 
 ### 应用程序设计
 
-- 创建与 `OS` 同级的 `User` 目录，`cargo new user --lib`，并且
+- 创建与 `OS` 同级的 `User` 目录，`cargo new user --lib`，并且添加相关的文件
 
 - 提供 `panic_handler` 功能应对致命错误
 
