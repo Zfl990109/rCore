@@ -5,14 +5,6 @@
 - 关于 rCore-Tutorial-Book 第一章的一些笔记
 - 请搭配 rCore-Tutorial-Book 食用
 
-### 移除标准库依赖
-
-- 移除 println! 宏
-
-- 提供 `panic_handler` 功能应对致命错误
-
-- 移除 `main` 函数
-
 
 ### Qemu 启动流程
 
