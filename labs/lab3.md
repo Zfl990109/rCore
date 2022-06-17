@@ -206,10 +206,10 @@
     
     #[derive(Copy, Clone)]
     pub struct TaskInfo {
-    	pub id: usize,								// 任务 id
-    	pub status: TaskStatus,						// 任务状态
-    	pub call: [SyscallInfo; MAX_SYSCALL_NUM],	// 任务使用的系统调用信息
-    	pub time: usize,							// 任务运行的总时间
+    	pub id: usize, 		// 任务 id
+    	pub status: TaskStatus,	  // 任务状态
+    	pub call: [SyscallInfo; MAX_SYSCALL_NUM],  // 任务使用的系统调用信息
+    	pub time: usize,  // 任务运行的总时间
     }
     impl TaskInfo {
     	pub fn new() -> Self{
