@@ -309,8 +309,8 @@
     println!("Test power_3 OK!");		// times + 1
     ```
 
+    <img src = "../assets/lab3/taskinfo.png">
 
-<img src = "../assets/lab3/taskinfo.png">
 
 - 打印调用堆栈
 
