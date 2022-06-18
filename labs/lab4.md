@@ -89,7 +89,7 @@
     >
     > `token`：获取地址空间的 satp
     >
-    > `insert_framed_area`：插入内核对等映射的区域
+    > `insert_framed_area`：插入虚拟地址区域，对应的物理地址是通过 `frame_allocator` 分配
     >
     > `push`：向地址空间中插入 `MapArea` 
     >
