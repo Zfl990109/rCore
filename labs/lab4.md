@@ -36,7 +36,7 @@
 
   - `PageTableEntry` 提供了页表项的相关函数
 
-    > `new` ：根据 `PPN` 以及 `PTEFlags` 狗仔页表项
+    > `new` ：根据 `PPN` 以及 `PTEFlags` 构造页表项
     >
     > `empty`：判断页表是否为空
     >
