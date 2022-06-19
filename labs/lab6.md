@@ -88,7 +88,7 @@
 
 - 在 `TaskControlBlock` 中新增 `fd_table` 向量，其中存放的是实现了 `File` 特性的数据结构，可以是 `OSinode` 、`stdout`、`stdin`、管道等，并且修改创建进程的相关函数
 
-- 修改 `os/Makefile` 文件，将应用程序编译后写入到 `fs-img` 块设备中，并且启动 `qemu` 时加载块设备
+- 修改 `os/Makefile` 文件，使用 `easy-fs-fuse` 中的脚本，将应用程序编译后写入到 `fs-img` 块设备中，并且启动 `qemu` 时加载块设备
 
   ```
   fs-img: $(APPS)
