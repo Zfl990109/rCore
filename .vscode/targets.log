@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.1
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2014 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun 22 10:06:19 2022
+# Make data base, printed on Wed Jun 22 10:45:28 2022
 
 # Variables
 
@@ -45,8 +47,6 @@ VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_langu
 # environment
 _ = /usr/share/code/code
 # environment
-JOURNAL_STREAM = 9:29946
-# environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile
 MAKEFILE_LIST := 
@@ -63,8 +63,6 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-MANAGERPID = 935
-# environment
 CLUTTER_IM_MODULE = xim
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
@@ -73,11 +71,11 @@ VSCODE_CWD = /home/zfl
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/zfl/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/zfl/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/zfl/qemu-5.0.0:/home/zfl/qemu-5.0.0/riscv64-softmmu:/home/zfl/qemu-5.0.0/riscv64-linux-user:/home/zfl/riscv_toolchain/bin
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/zfl-Surface-Pro:@/tmp/.ICE-unix/1005,unix/zfl-Surface-Pro:/tmp/.ICE-unix/1005
+SESSION_MANAGER = local/zfl-Surface-Pro:@/tmp/.ICE-unix/979,unix/zfl-Surface-Pro:/tmp/.ICE-unix/979
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -88,8 +86,6 @@ XDG_MENU_PREFIX = gnome-
 VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
-# environment
-INVOCATION_ID = bc97a2eec84043bea548e7aefe476321
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -99,7 +95,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 26440
+GIO_LAUNCHED_DESKTOP_FILE_PID = 1578
 # automatic
 %F = $(notdir $%)
 # environment
@@ -113,7 +109,7 @@ PWD = /home/zfl/桌面/rCore
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1100
+SSH_AGENT_PID = 1074
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -149,11 +145,11 @@ MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = xim
 # environment
-SHLVL = 0
+SHLVL = 1
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-14c24e29-1bb2-44db-8ee0-e3cc6e1b71ef.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-36f25e14-3934-40b4-afd4-0e6eb99a9b06.sock
 # environment
 XDG_SESSION_ID = 1
 # environment
@@ -164,8 +160,6 @@ USER = zfl
 XDG_CURRENT_DESKTOP = Unity
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
-# environment
-ZEITGEIST_DATA_PATH = /home/zfl/.local/share/zeitgeist
 # default
 MAKE_COMMAND := make
 # default
@@ -189,8 +183,6 @@ GDK_BACKEND = x11
 # automatic
 +F = $(notdir $+)
 # environment
-NO_AT_BRIDGE = 1
-# environment
 QT_ACCESSIBILITY = 1
 # environment
 TEXTDOMAINDIR = /usr/share/locale/
@@ -200,8 +192,6 @@ MAKEFILES :=
 <F = $(notdir $<)
 # environment
 LC_ALL = C
-# environment
-DBUS_STARTER_BUS_TYPE = session
 # environment
 QT4_IM_MODULE = xim
 # automatic
@@ -219,11 +209,9 @@ WINDOWPATH = 1
 # environment
 LANG = C
 # environment
-VSCODE_PID = 9387
-# environment
-DBUS_STARTER_ADDRESS = unix:path=/run/user/1000/bus,guid=53582ea14d2bb9e622ed1cd462b25eb4
+VSCODE_PID = 1578
 # variable set hash-table stats:
-# Load=106/1024=10%, Rehash=0, Collisions=15/128=12%
+# Load=99/1024=10%, Rehash=0, Collisions=14/121=12%
 
 # Pattern-specific Variable Values
 
@@ -231,9 +219,9 @@ DBUS_STARTER_ADDRESS = unix:path=/run/user/1000/bus,guid=53582ea14d2bb9e622ed1cd
 
 # Directories
 
-# . (device 66307, inode 7632741): 5 files, no impossibilities.
+# . (device 66307, inode 7632741): 7 files, no impossibilities.
 
-# 5 files, no impossibilities in 1 directories.
+# 7 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -283,15 +271,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 13 / storage = 112 B / avg = 8 B
- 
-make: *** No rule to make target 'all'.  Stop.
+# strcache buffers: 1 (0) / strings = 15 / storage = 122 B / avg = 8 B
+# current buf: size = 8162 B / used = 122 B / count = 15 / avg = 8 B
 
-# current buf: size = 8162 B / used = 112 B / count = 13 / avg = 8 B
-
-# strcache performance: lookups = 16 / hit rate = 18%
+# strcache performance: lookups = 18 / hit rate = 16%
 # hash-table stats:
-# Load=13/8192=0%, Rehash=0, Collisions=1/16=6%
-# Finished Make data base on Wed Jun 22 10:06:19 2022
+# Load=15/8192=0%, Rehash=0, Collisions=1/18=6%
+# Finished Make data base on Wed Jun 22 10:45:28 2022
 
  

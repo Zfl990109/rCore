@@ -22,16 +22,21 @@
 
 use core::arch::global_asm;
 
+#[path = "boards/qemu.rs"]
+mod board;
 #[macro_use]
 mod console;
-
-pub mod batch;
+mod config;
 mod lang_items;
+mod loader;
 mod sbi;
 mod sync;
 pub mod syscall;
+pub mod task;
+mod timer;
 pub mod trap;
 mod logging;
+mod stack_trace;
 
 global_asm!(include_str!("entry.asm"));
 global_asm!(include_str!("link_app.S"));
@@ -53,8 +58,10 @@ fn clear_bss() {
 pub fn rust_main() -> ! {
     clear_bss();
     logging::init();
-    log::info!("[kernel] Hello, world!");
     trap::init();
-    batch::init();
-    batch::run_next_app();
+    loader::load_apps();
+    trap::enable_timer_interrupt();
+    timer::set_next_trigger();
+    task::run_first_task();
+    panic!("Unreachable in rust_main!");
 }
