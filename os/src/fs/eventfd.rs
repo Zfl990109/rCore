@@ -54,12 +54,13 @@ impl File for Eventfd {
         self.writable
     }
     fn read(&self, mut buf: UserBuffer) -> usize {
-        let mut inner = self.inner.exclusive_access();
         loop {
+            let mut inner = self.inner.exclusive_access();
             if inner.val == 0 {     // 读取失败
                 if inner.is_nonblock {
                     return usize::MAX;
                 } else {    // 应该阻塞线程
+                    drop(inner);
                     suspend_current_and_run_next();
                     continue;
                 }

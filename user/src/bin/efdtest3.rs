@@ -10,10 +10,10 @@ extern crate byteorder;
 use alloc::vec;
 use user_lib::{read, write};
 use byteorder::{BigEndian, ByteOrder};
-/// 非信号量模式，直接读取数据
+/// 信号量模式，non_block 模式，直接读取数据
 #[no_mangle]
 pub fn main() -> i32 {
-    let efd = eventfd(0, 0);
+    let efd = eventfd(0, 2049);
     let mut u: u64 = 0;
     let ref mut buffer = vec![0u8; 8];
     let pid = fork();
@@ -26,10 +26,9 @@ pub fn main() -> i32 {
         sleep(20);
         read(efd as usize, buffer);
         u = BigEndian::read_u64(buffer);
-        println!("{}", u);
-        assert_eq!(u, 100);
-        println!("efdtest0 ok");
-        // println!("{}", read(efd as usize, buffer));
+        assert_eq!(1, u);
+        assert_eq!(-1, read(efd as usize, buffer));
+        println!("efdtest3 ok");
     }
     0
 }
