@@ -1,6 +1,6 @@
 #![no_std]
 #![no_main]
-#![deny(warnings)]
+// #![deny(warnings)]
 
 #[macro_use]
 extern crate alloc;
@@ -100,6 +100,7 @@ fn virtio_gpu(header: &'static mut VirtIOHeader) {
         }
     }
     gpu.flush().expect("failed to flush");
+    // loop {};
     info!("virtio-gpu test finished");
 }
 
