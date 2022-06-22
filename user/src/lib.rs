@@ -6,14 +6,10 @@
 pub mod console;
 mod lang_items;
 mod syscall;
-pub mod taskinfo;
-
-use taskinfo::TaskInfo;
 
 #[no_mangle]
 #[link_section = ".text.entry"]
 pub extern "C" fn _start() -> ! {
-    clear_bss();
     exit(main());
     panic!("unreachable after sys_exit!");
 }
@@ -22,16 +18,6 @@ pub extern "C" fn _start() -> ! {
 #[no_mangle]
 fn main() -> i32 {
     panic!("Cannot find main!");
-}
-
-fn clear_bss() {
-    extern "C" {
-        fn start_bss();
-        fn end_bss();
-    }
-    (start_bss as usize..end_bss as usize).for_each(|addr| unsafe {
-        (addr as *mut u8).write_volatile(0);
-    });
 }
 
 use syscall::*;
@@ -49,6 +35,12 @@ pub fn get_time() -> isize {
     sys_get_time()
 }
 
-pub fn get_task_info(id: usize, ts: *mut TaskInfo) -> isize {
-    sys_get_task_info(id, ts)
+/// map
+pub fn mmap(start: usize, len: usize, prot: usize) -> isize {
+    sys_mmap(start, len, prot)
+}
+
+/// unmap
+pub fn munmap(start: usize, len: usize) -> isize {
+    sys_munmap(start, len)
 }

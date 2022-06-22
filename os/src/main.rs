@@ -19,6 +19,12 @@
 #![no_std]
 #![no_main]
 #![feature(panic_info_message)]
+#![feature(alloc_error_handler)]
+
+extern crate alloc;
+
+#[macro_use]
+extern crate bitflags;
 
 use core::arch::global_asm;
 
@@ -29,12 +35,14 @@ mod console;
 mod config;
 mod lang_items;
 mod loader;
+mod mm;
 mod sbi;
 mod sync;
 pub mod syscall;
 pub mod task;
 mod timer;
 pub mod trap;
+
 mod logging;
 mod stack_trace;
 
@@ -58,8 +66,12 @@ fn clear_bss() {
 pub fn rust_main() -> ! {
     clear_bss();
     logging::init();
+    log::info!("[kernel] Hello, world!");
+    mm::init();
+    log::info!("[kernel] back to world!");
+    mm::remap_test();
     trap::init();
-    loader::load_apps();
+    //trap::enable_interrupt();
     trap::enable_timer_interrupt();
     timer::set_next_trigger();
     task::run_first_task();

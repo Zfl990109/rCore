@@ -11,21 +11,20 @@
 
 mod context;
 mod switch;
-
 #[allow(clippy::module_inception)]
 mod task;
 
-use crate::config::MAX_APP_NUM;
-use crate::loader::{get_num_app, init_app_cx};
+use crate::loader::{get_app_data, get_num_app};
 use crate::sync::UPSafeCell;
+use crate::trap::TrapContext;
+use alloc::vec::Vec;
 use lazy_static::*;
 use switch::__switch;
 use task::{TaskControlBlock, TaskStatus};
+use crate::config::PAGE_SIZE;
+use crate::mm::{VirtPageNum, VPNRange, MapPermission, VirtAddr};
 
 pub use context::TaskContext;
-pub use task::TaskInfo;
-use task::MAX_SYSCALL_NUM;
-use crate::timer::get_time;
 
 /// The task manager, where all the tasks are managed.
 ///
@@ -43,27 +42,23 @@ pub struct TaskManager {
     inner: UPSafeCell<TaskManagerInner>,
 }
 
-/// Inner of Task Manager
-pub struct TaskManagerInner {
+/// The task manager inner in 'UPSafeCell'
+struct TaskManagerInner {
     /// task list
-    tasks: [TaskControlBlock; MAX_APP_NUM],
+    tasks: Vec<TaskControlBlock>,
     /// id of current `Running` task
     current_task: usize,
 }
 
 lazy_static! {
-    /// Global variable: TASK_MANAGER
+    /// a `TaskManager` global instance through lazy_static!
     pub static ref TASK_MANAGER: TaskManager = {
+        println!("init TASK_MANAGER");
         let num_app = get_num_app();
-        let mut tasks = [TaskControlBlock {
-            task_cx: TaskContext::zero_init(),
-            task_status: TaskStatus::UnInit,
-            task_info: TaskInfo::new(),
-            last_start_time: 0,
-        }; MAX_APP_NUM];
-        for (i, task) in tasks.iter_mut().enumerate() {
-            task.task_cx = TaskContext::goto_restore(init_app_cx(i));
-            task.task_status = TaskStatus::Ready;
+        println!("num_app = {}", num_app);
+        let mut tasks: Vec<TaskControlBlock> = Vec::new();
+        for i in 0..num_app {
+            tasks.push(TaskControlBlock::new(get_app_data(i), i));
         }
         TaskManager {
             num_app,
@@ -81,20 +76,17 @@ impl TaskManager {
     /// Run the first task in task list.
     ///
     /// Generally, the first task in task list is an idle task (we call it zero process later).
-    /// But in ch3, we load apps statically, so the first task is a real app.
+    /// But in ch4, we load apps statically, so the first task is a real app.
     fn run_first_task(&self) -> ! {
         let mut inner = self.inner.exclusive_access();
-        let task0 = &mut inner.tasks[0];
-        task0.task_status = TaskStatus::Running;
-
-        task0.last_start_time = get_time();
-
-        let next_task_cx_ptr = &task0.task_cx as *const TaskContext;
+        let next_task = &mut inner.tasks[0];
+        next_task.task_status = TaskStatus::Running;
+        let next_task_cx_ptr = &next_task.task_cx as *const TaskContext;
         drop(inner);
         let mut _unused = TaskContext::zero_init();
         // before this, we should drop local variables that must be dropped manually
         unsafe {
-            __switch(&mut _unused as *mut TaskContext, next_task_cx_ptr);
+            __switch(&mut _unused as *mut _, next_task_cx_ptr);
         }
         panic!("unreachable in run_first_task!");
     }
@@ -102,15 +94,15 @@ impl TaskManager {
     /// Change the status of current `Running` task into `Ready`.
     fn mark_current_suspended(&self) {
         let mut inner = self.inner.exclusive_access();
-        let current = inner.current_task;
-        inner.tasks[current].task_status = TaskStatus::Ready;
+        let cur = inner.current_task;
+        inner.tasks[cur].task_status = TaskStatus::Ready;
     }
 
     /// Change the status of current `Running` task into `Exited`.
     fn mark_current_exited(&self) {
         let mut inner = self.inner.exclusive_access();
-        let current = inner.current_task;
-        inner.tasks[current].task_status = TaskStatus::Exited;
+        let cur = inner.current_task;
+        inner.tasks[cur].task_status = TaskStatus::Exited;
     }
 
     /// Find next task to run and return task id.
@@ -124,6 +116,18 @@ impl TaskManager {
             .find(|id| inner.tasks[*id].task_status == TaskStatus::Ready)
     }
 
+    /// Get the current 'Running' task's token.
+    fn get_current_token(&self) -> usize {
+        let inner = self.inner.exclusive_access();
+        inner.tasks[inner.current_task].get_user_token()
+    }
+
+    /// Get the current 'Running' task's trap contexts.
+    fn get_current_trap_cx(&self) -> &'static mut TrapContext {
+        let inner = self.inner.exclusive_access();
+        inner.tasks[inner.current_task].get_trap_cx()
+    }
+
     /// Switch current `Running` task to the task we have found,
     /// or there is no `Ready` task and we can exit with all applications completed
     fn run_next_task(&self) {
@@ -132,12 +136,6 @@ impl TaskManager {
             let current = inner.current_task;
             inner.tasks[next].task_status = TaskStatus::Running;
             inner.current_task = next;
-
-            let now = get_time();
-            inner.tasks[current].task_info.time += now - inner.tasks[current].last_start_time;
-            inner.tasks[next].last_start_time = now;
-
-
             let current_task_cx_ptr = &mut inner.tasks[current].task_cx as *mut TaskContext;
             let next_task_cx_ptr = &inner.tasks[next].task_cx as *const TaskContext;
             drop(inner);
@@ -151,75 +149,118 @@ impl TaskManager {
         }
     }
 
-    fn get_task_info(&self, id: usize, ts: *mut TaskInfo) -> isize {
-        let inner = self.inner.exclusive_access();
-        if id >= self.num_app {
+    fn mmap(&self, start: usize, len: usize, prot: usize) -> isize {
+        if (start % PAGE_SIZE) != 0 ||
+        (prot & !0x7 != 0) || (prot & 0x7 == 0) {
             return -1;
         }
-        unsafe {
-            (*ts).id = id;
-            (*ts).status = inner.tasks[id].task_status;
-            (*ts).call = inner.tasks[id].task_info.call;
-            (*ts).time = inner.tasks[id].task_info.time;
+        let mut length = len;
+        if len % PAGE_SIZE != 0 {
+            length = len + (PAGE_SIZE - len % PAGE_SIZE);
         }
-        0
-    }
-
-    fn record_current_task_syscall(&self, syscall_id: usize) {
         let mut inner = self.inner.exclusive_access();
         let current = inner.current_task;
-        let mut idx = 0;
-        for i in 0..MAX_SYSCALL_NUM {
-            if inner.tasks[current].task_info.call[i].id == 0 {
-                idx = i;
-                break;
-            } else if inner.tasks[current].task_info.call[i].id == syscall_id {
-                idx = i;
-                break;
+        let vpn_start = VirtPageNum::from(start / PAGE_SIZE);
+        let vpn_end = VirtPageNum::from((start + length) / PAGE_SIZE);
+        let vpn_range = VPNRange::new(vpn_start, vpn_end);
+        for vpn in vpn_range {
+            if inner.tasks[current].memory_set.find_vpn(vpn) {
+                return -1;
             }
-        };
-        inner.tasks[current].task_info.call[idx].id = syscall_id;
-        inner.tasks[current].task_info.call[idx].times += 1;
+        }
+        let permission = MapPermission::from_bits((prot as u8) << 1).unwrap() | MapPermission::U;
+        inner.tasks[current].memory_set.insert_framed_area(
+            VirtAddr::from(start),
+            VirtAddr::from(start + length),
+            permission
+        );
+        for vpn in vpn_range {
+            if false == inner.tasks[current].memory_set.find_vpn(vpn) {
+                return -1;
+            }
+        }
+        length as isize
+    }
+
+    fn munmap(&self, start: usize, len: usize) -> isize {
+        if (start % PAGE_SIZE) != 0 {
+            return -1;
+        }
+        let mut length = len;
+        if len % PAGE_SIZE != 0 {
+            length = len + (PAGE_SIZE - len % PAGE_SIZE);
+        }
+        let mut inner = self.inner.exclusive_access();
+        let current = inner.current_task;
+        let vpn_start = VirtPageNum::from(start / PAGE_SIZE);
+        let vpn_end = VirtPageNum::from((start + length) / PAGE_SIZE);
+        let vpn_range = VPNRange::new(vpn_start, vpn_end);
+        for vpn in vpn_range {
+            if !(inner.tasks[current].memory_set.find_vpn(vpn)) {
+                return -1;
+            }
+        }
+        for vpn in vpn_range {
+            inner.tasks[current].memory_set.munmap(vpn);
+        }
+        for vpn in vpn_range {
+            if true == inner.tasks[current].memory_set.find_vpn(vpn) {
+                return -1;
+            }
+        }
+        length as isize
     }
 }
 
-/// run first task
+/// Run the first task in task list.
 pub fn run_first_task() {
     TASK_MANAGER.run_first_task();
 }
 
-/// rust next task
+/// Switch current `Running` task to the task we have found,
+/// or there is no `Ready` task and we can exit with all applications completed
 fn run_next_task() {
     TASK_MANAGER.run_next_task();
 }
 
-/// suspend current task
+/// Change the status of current `Running` task into `Ready`.
 fn mark_current_suspended() {
     TASK_MANAGER.mark_current_suspended();
 }
 
-/// exit current task
+/// Change the status of current `Running` task into `Exited`.
 fn mark_current_exited() {
     TASK_MANAGER.mark_current_exited();
 }
 
-/// suspend current task, then run next task
+/// Suspend the current 'Running' task and run the next task in task list.
 pub fn suspend_current_and_run_next() {
     mark_current_suspended();
     run_next_task();
 }
 
-/// exit current task,  then run next task
+/// Exit the current 'Running' task and run the next task in task list.
 pub fn exit_current_and_run_next() {
     mark_current_exited();
     run_next_task();
 }
-/// get_task_info
-pub fn get_task_info(id: usize, ts: *mut TaskInfo) -> isize {
-    TASK_MANAGER.get_task_info(id, ts)
+
+/// Get the current 'Running' task's token.
+pub fn current_user_token() -> usize {
+    TASK_MANAGER.get_current_token()
 }
 
-/// record task info
-pub fn record_current_task_syscall(syscall_id: usize) {
-    TASK_MANAGER.record_current_task_syscall(syscall_id);
+/// Get the current 'Running' task's trap contexts.
+pub fn current_trap_cx() -> &'static mut TrapContext {
+    TASK_MANAGER.get_current_trap_cx()
+}
+
+/// map
+pub fn mmap(start: usize, len: usize, prot: usize) -> isize {
+    TASK_MANAGER.mmap(start, len, prot)
+}
+
+/// unmap
+pub fn munmap(start: usize, len: usize) -> isize {
+    TASK_MANAGER.munmap(start, len)
 }
