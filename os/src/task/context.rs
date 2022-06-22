@@ -8,7 +8,7 @@ pub struct TaskContext {
     ra: usize,
     /// kernel stack pointer of app
     sp: usize,
-    /// callee saved registers:  s 0..11
+    /// s0-11 register, callee saved
     s: [usize; 12],
 }
 
