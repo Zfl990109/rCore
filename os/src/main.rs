@@ -14,8 +14,8 @@
 //! We then call [`batch::run_next_app()`] and for the first time go to
 //! userspace.
 
-#![deny(missing_docs)]
-#![deny(warnings)]
+// #![deny(missing_docs)]
+// #![deny(warnings)]
 #![no_std]
 #![no_main]
 #![feature(panic_info_message)]
@@ -34,15 +34,15 @@ mod board;
 mod console;
 mod config;
 mod drivers;
-pub mod fs;
-pub mod lang_items;
-pub mod mm;
-pub mod sbi;
-pub mod sync;
-pub mod syscall;
-pub mod task;
-pub mod timer;
-pub mod trap;
+mod fs;
+mod lang_items;
+mod mm;
+mod sbi;
+mod sync;
+mod syscall;
+mod task;
+mod timer;
+mod trap;
 
 mod logging;
 mod stack_trace;

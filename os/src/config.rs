@@ -1,4 +1,3 @@
-//! Constants used in rCore
 #[allow(unused)]
 
 pub const USER_STACK_SIZE: usize = 4096 * 2;

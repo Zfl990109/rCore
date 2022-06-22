@@ -5,9 +5,17 @@
 extern crate user_lib;
 
 static TESTS: &[&str] = &[
-    "ch7_file0\0",
-    "ch7_file1\0",
-    "ch7_file2\0",
+    "exit\0",
+    "fantastic_text\0",
+    "forktest\0",
+    "forktest2\0",
+    "forktest_simple\0",
+    "hello_world\0",
+    "matrix\0",
+    "sleep\0",
+    "sleep_simple\0",
+    "stack_overflow\0",
+    "yield\0",
 ];
 
 use user_lib::{exec, fork, waitpid};
@@ -18,7 +26,7 @@ pub fn main() -> i32 {
         println!("Usertests: Running {}", test);
         let pid = fork();
         if pid == 0 {
-            exec(*test);
+            exec(*test, &[core::ptr::null::<u8>()]);
             panic!("unreachable!");
         } else {
             let mut exit_code: i32 = Default::default();
