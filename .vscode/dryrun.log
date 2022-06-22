@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/zfl/桌面/rCore'
+make: Leaving directory '/home/zfl/桌面/rCore'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
