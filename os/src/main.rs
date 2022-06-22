@@ -45,7 +45,6 @@ mod timer;
 mod trap;
 
 mod logging;
-mod stack_trace;
 
 global_asm!(include_str!("entry.asm"));
 
