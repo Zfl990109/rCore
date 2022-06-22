@@ -33,21 +33,21 @@ mod board;
 #[macro_use]
 mod console;
 mod config;
-mod lang_items;
-mod loader;
+mod drivers;
+pub mod fs;
+pub mod lang_items;
 pub mod mm;
-mod sbi;
+pub mod sbi;
 pub mod sync;
 pub mod syscall;
 pub mod task;
-mod timer;
+pub mod timer;
 pub mod trap;
 
 mod logging;
 mod stack_trace;
 
 global_asm!(include_str!("entry.asm"));
-global_asm!(include_str!("link_app.S"));
 
 /// clear BSS segment
 fn clear_bss() {
@@ -69,13 +69,11 @@ pub fn rust_main() -> ! {
     log::info!("[kernel] Hello, world!");
     mm::init();
     mm::remap_test();
-    task::add_initproc();
-    log::info!("after initproc!");
     trap::init();
-    //trap::enable_interrupt();
     trap::enable_timer_interrupt();
     timer::set_next_trigger();
-    loader::list_apps();
+    fs::list_apps();
+    task::add_initproc();
     task::run_tasks();
     panic!("Unreachable in rust_main!");
 }

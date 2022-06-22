@@ -5,23 +5,9 @@
 extern crate user_lib;
 
 static TESTS: &[&str] = &[
-    "ch5_exit0\0",
-    "ch5_exit1\0",
-    "ch5_getchar\0",
-    "ch5_getpid\0",
-    "ch5_spawn0\0",
-    "ch5_spawn1\0",
-    "exit\0",
-    // "fantastic_text\0",
-    // "forktest\0",
-    // "forktest2\0",
-    // "forktest_simple\0",
-    // "hello_world\0",
-    // "matrix\0",
-    // "sleep\0",
-    // "sleep_simple\0",
-    // "stack_overflow\0",
-    // "yield\0",
+    "ch7_file0\0",
+    "ch7_file1\0",
+    "ch7_file2\0",
 ];
 
 use user_lib::{exec, fork, waitpid};
