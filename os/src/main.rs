@@ -68,6 +68,8 @@ pub fn rust_main() -> ! {
     log::info!("[kernel] Hello, world!");
     mm::init();
     mm::remap_test();
+    drivers::block_device_test();
+    drivers::gpu_device_test();
     trap::init();
     trap::enable_timer_interrupt();
     timer::set_next_trigger();
