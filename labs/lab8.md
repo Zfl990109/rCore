@@ -109,23 +109,29 @@
     	inner: Arc<UPSafeCell<EventfdInner>>,
     }
     struct EventfdInner {
-    	pub process: Weak<ProcessControlBlock>,
-    	pub flag: bool,
+    	pub is_sema: bool,
+        pub is_nonblock: bool,
     	pub val: u64,
     }
+    const EFD_SEMAPHORE: i32 = 1;
+    const EFD_NONBLOCK: i32 = 2048;
     impl Eventfd {
-    	pub fn new(val: u64, flag: i32, process: Weak<ProcessControlBlock>) -> Arc<Self> {
+    	pub fn new(val: u64, flag: i32) -> Arc<Self> {
     		let mut is_sema = true;
+            let mut is_nonblock = true;
     		if (flag & EFD_SEMAPHORE) == 0 {
     			is_sema = false;
+    		}
+            if (flag & EFD_NONBLOCK) == 0 {
+    			is_nonblock = false;
     		}
     		Arc::new(Self {
     			readable: true,
     			writable: true,
     			inner: Arc::new(unsafe {
     				UPSafeCell::new(EventfdInner {
-    					process: process,
-    					flag: is_sema,
+    					is_sema: is_sema,
+                        is_nonblock: is_nonblock,
     					val: val,
     				})
     			}),
@@ -134,8 +140,64 @@
     }
     ```
 
-  - 实现 `File` 特性，这里具体的实现还没有完成，在 `Eventfd` 中加入所属进程的弱引用，方便读写失败时阻塞进程或线程
+  - 实现 `File` 特性，在读文件时通过外部的 `loop` 循环来保证可以在计数值为零时可以阻塞当前线程，读写通过 `byteorder` 依赖包的来完成 `UserBuffer` 与 `u64` 之间的转化
+
+    ```
+    impl File for Eventfd {
+    	fn readable(&self) -> bool {
+            self.readable
+        }
+        fn writable(&self) -> bool {
+            self.writable
+        }
+        fn read(&self, mut buf: UserBuffer) -> usize {
+            loop {
+                let mut inner = self.inner.exclusive_access();
+                if inner.val == 0 {     // 读取失败
+                    if inner.is_nonblock {
+                        return usize::MAX;
+                    } else {    // 应该阻塞线程
+                        drop(inner);
+                        suspend_current_and_run_next();
+                        continue;
+                    }
+                } else {
+                    let mut res = 0u64;
+                    if inner.is_sema {
+                        res = 1u64;
+                        inner.val -= 1;
+                    } else {
+                        res = inner.val;
+                        inner.val = 0;
+                    }
+                    for slice in buf.buffers.iter_mut() {
+                        assert_eq!(8, slice.len());
+                        BigEndian::write_u64(*slice, res);
+                    }
+                    return 0;
+                }
+            }
+        }
+        fn write(&self, buf: UserBuffer) -> usize {
+            let mut inner = self.inner.exclusive_access();
+            // 先将缓冲区的数据转化成 u64
+            for slice in buf.buffers.iter() {
+                assert_eq!(8, slice.len());
+                if inner.is_sema {
+                    inner.val += 1;
+                } else {
+                    let val = BigEndian::read_u64(*slice);
+                    inner.val += val;
+                }
+            }
+            0
+        }
+    }
+    ```
 
   - 在内核的系统调用中提供相关的接口 `sys_eventfd` 创建一个 `Eventfd`，之后对则通过 `write`、`read`系统调用完成读写
 
-- 银行家算法
+  - 实验结果，补充了第八章的测试用例，分别对信号量 + 阻塞模式、信号量 + 非阻塞模式、非信号量 + 阻塞模式、非信号量 + 非阻塞模式进行了测试，均达到预期的效果
+
+
+<img src = "../assets/lab8/lab8res.png">
