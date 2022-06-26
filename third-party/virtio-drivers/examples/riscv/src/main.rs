@@ -100,7 +100,7 @@ fn virtio_gpu(header: &'static mut VirtIOHeader) {
         }
     }
     gpu.flush().expect("failed to flush");
-    loop {};
+    // loop {};
     info!("virtio-gpu test finished");
 }
 

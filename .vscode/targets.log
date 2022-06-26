@@ -7,8 +7,9 @@ make: *** No rule to make target 'all'.  Stop.
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Thu Jun 23 08:19:03 2022
+# Make data base, printed on Sun Jun 26 14:38:24 2022
 
 # Variables
 
@@ -75,7 +76,7 @@ PATH = /home/zfl/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/s
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/zfl-Surface-Pro:@/tmp/.ICE-unix/1067,unix/zfl-Surface-Pro:/tmp/.ICE-unix/1067
+SESSION_MANAGER = local/zfl-Surface-Pro:@/tmp/.ICE-unix/1079,unix/zfl-Surface-Pro:/tmp/.ICE-unix/1079
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -95,12 +96,13 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 1949
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2728
 # automatic
 %F = $(notdir $%)
 # environment
 DISPLAY = :0
 # environment
+ 
 GTK_IM_MODULE = ibus
 # environment
 VSCODE_PIPE_LOGGING = true
@@ -109,7 +111,7 @@ PWD = /home/zfl/桌面/rCore
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1162
+SSH_AGENT_PID = 1174
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -149,7 +151,7 @@ SHLVL = 1
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-4c358623-499e-4c3d-b244-298a8fbbf421.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-f0ce594d-3152-4dd4-a6db-469987c404df.sock
 # environment
 XDG_SESSION_ID = 1
 # environment
@@ -185,6 +187,7 @@ GDK_BACKEND = x11
 # environment
 QT_ACCESSIBILITY = 1
 # environment
+ 
 TEXTDOMAINDIR = /usr/share/locale/
 # default
 MAKEFILES := 
@@ -213,7 +216,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 1949
+VSCODE_PID = 2728
 # variable set hash-table stats:
 # Load=101/1024=10%, Rehash=0, Collisions=14/123=11%
 
@@ -223,9 +226,9 @@ VSCODE_PID = 1949
 
 # Directories
 
-# . (device 66307, inode 9597541): 11 files, no impossibilities.
+# . (device 66307, inode 9597541): 10 files, no impossibilities.
 
-# 11 files, no impossibilities in 1 directories.
+# 10 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -255,6 +258,7 @@ makefile:
 #  Failed to be updated.
 
 # Not a target:
+ 
 .DEFAULT:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -275,13 +279,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 19 / storage = 163 B / avg = 8 B
-# current buf: size = 8162 B / used = 163 B / count = 19 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 18 / storage = 155 B / avg = 8 B
+# current buf: size = 8162 B / used = 155 B / count = 18 / avg = 8 B
 
-# strcache performance: lookups = 22 / hit rate = 13%
+# strcache performance: lookups = 21 / hit rate = 14%
 # hash-table stats:
-# Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
- 
-# Finished Make data base on Thu Jun 23 08:19:03 2022
+# Load=18/8192=0%, Rehash=0, Collisions=1/21=5%
+# Finished Make data base on Sun Jun 26 14:38:24 2022
 
  

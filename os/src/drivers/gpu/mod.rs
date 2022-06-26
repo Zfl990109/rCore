@@ -15,5 +15,5 @@ lazy_static! {
 pub fn gpu_device_test() {
     let ref mut gpu_device = GPU_DEVICE.clone();
     gpu_device.test();
-    loop {};
+    // loop {};
 }
