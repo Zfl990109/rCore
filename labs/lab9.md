@@ -23,7 +23,7 @@
     > make install
     > ```
 
-### 在内核中添加 VirtIO-GPU 驱动
+### 在内核中添加 VirtIO-GPU 驱动（尚未完成，还需要对缓冲区进行封装）
 
 - 在 `os/Makefile` 文件中启动 `qemu` 的指令中添加 `virtio-gpu-device` 设备，并将其挂在到总线上
 
@@ -168,3 +168,4 @@
 - 在 `main.rs` 中添加对 `gpu` 的测试，结果如下
 
   <img src = "../assets/lab9/lab9res.png">
+  <img src = "../assets/lab9/lab9test.png" style="zoom:50%;" >
