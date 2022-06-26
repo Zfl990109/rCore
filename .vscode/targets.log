@@ -2,14 +2,21 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target 'all'.  Stop.
 
 # GNU Make 4.1
+ 
 # Built for x86_64-pc-linux-gnu
+ 
 # Copyright (C) 1988-2014 Free Software Foundation, Inc.
+ 
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+ 
 # This is free software: you are free to change and redistribute it.
+ 
 # There is NO WARRANTY, to the extent permitted by law.
  
 
-# Make data base, printed on Sun Jun 26 14:38:24 2022
+ 
+# Make data base, printed on Sun Jun 26 16:19:06 2022
+ 
 
 # Variables
 
@@ -96,13 +103,12 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2728
+GIO_LAUNCHED_DESKTOP_FILE_PID = 27464
 # automatic
 %F = $(notdir $%)
 # environment
 DISPLAY = :0
 # environment
- 
 GTK_IM_MODULE = ibus
 # environment
 VSCODE_PIPE_LOGGING = true
@@ -151,7 +157,7 @@ SHLVL = 1
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-f0ce594d-3152-4dd4-a6db-469987c404df.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-2f3a0d38-0d2d-498f-8eb5-a3f829a5d8de.sock
 # environment
 XDG_SESSION_ID = 1
 # environment
@@ -187,7 +193,6 @@ GDK_BACKEND = x11
 # environment
 QT_ACCESSIBILITY = 1
 # environment
- 
 TEXTDOMAINDIR = /usr/share/locale/
 # default
 MAKEFILES := 
@@ -216,7 +221,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2728
+VSCODE_PID = 27464
 # variable set hash-table stats:
 # Load=101/1024=10%, Rehash=0, Collisions=14/123=11%
 
@@ -226,9 +231,9 @@ VSCODE_PID = 2728
 
 # Directories
 
-# . (device 66307, inode 9597541): 10 files, no impossibilities.
+# . (device 66307, inode 9597541): 11 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 11 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -258,7 +263,6 @@ makefile:
 #  Failed to be updated.
 
 # Not a target:
- 
 .DEFAULT:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -279,12 +283,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 18 / storage = 155 B / avg = 8 B
-# current buf: size = 8162 B / used = 155 B / count = 18 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 19 / storage = 162 B / avg = 8 B
+# current buf: size = 8162 B / used = 162 B / count = 19 / avg = 8 B
 
-# strcache performance: lookups = 21 / hit rate = 14%
+# strcache performance: lookups = 22 / hit rate = 13%
 # hash-table stats:
-# Load=18/8192=0%, Rehash=0, Collisions=1/21=5%
-# Finished Make data base on Sun Jun 26 14:38:24 2022
+# Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
+# Finished Make data base on Sun Jun 26 16:19:06 2022
 
  
