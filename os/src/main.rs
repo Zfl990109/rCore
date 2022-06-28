@@ -62,18 +62,24 @@ fn clear_bss() {
 
 /// the rust entry-point of os
 #[no_mangle]
-pub fn rust_main() -> ! {
-    clear_bss();
-    logging::init();
-    log::info!("[kernel] Hello, world!");
-    mm::init();
-    mm::remap_test();
-    drivers::gpu_device_test();
-    trap::init();
-    trap::enable_timer_interrupt();
-    timer::set_next_trigger();
-    fs::list_apps();
-    task::add_initproc();
-    task::run_tasks();
+pub fn rust_main(hart_id: usize) -> ! {
+    if hart_id == 0 {
+        clear_bss();
+        logging::init();
+        log::info!("[main hart_id: {}]", hart_id);
+        mm::init();
+        mm::remap_test();
+        drivers::gpu_device_test();
+        trap::init();
+        trap::enable_timer_interrupt();
+        timer::set_next_trigger();
+        fs::list_apps();
+        task::add_initproc();
+        task::run_tasks();
+    } else {
+        log::info!("[hart_id: {}]", hart_id);
+        loop{};
+    }
     panic!("Unreachable in rust_main!");
+
 }
