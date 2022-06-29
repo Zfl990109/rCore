@@ -171,7 +171,6 @@ checksum = "13287b4da9d1207a4f4929ac390916d64eacfe236a487e9a9f5b3be392be5162"
 [[package]]
 name = "virtio-drivers"
 version = "0.1.0"
-source = "git+https://github.com/rcore-os/virtio-drivers#f30d4268b7a58b2a7f5a4ce87d275e7bd2484acf"
 dependencies = [
  "bitflags",
  "log",

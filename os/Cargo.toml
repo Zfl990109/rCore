@@ -13,7 +13,7 @@ bitflags = "1.2.1"
 xmas-elf = "0.7.0"
 log = "0.4"
 easy-fs = { path = "../easy-fs" }
-virtio-drivers = { git = "https://github.com/rcore-os/virtio-drivers" }
+virtio-drivers = { path = "../third-party/virtio-drivers" }
 
 
 [profile.release]
