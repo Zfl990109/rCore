@@ -1,40 +1,29 @@
-//! The main module and entrypoint
-//!
-//! Various facilities of the kernels are implemented as submodules. The most
-//! important ones are:
-//!
-//! - [`trap`]: Handles all cases of switching from userspace to the kernel
-//! - [`syscall`]: System call handling and implementation
-//!
-//! The operating system also starts in this module. Kernel code starts
-//! executing from `entry.asm`, after which [`rust_main()`] is called to
-//! initialize various pieces of functionality. (See its source code for
-//! details.)
-//!
-//! We then call [`batch::run_next_app()`] and for the first time go to
-//! userspace.
-
-// #![deny(missing_docs)]
-// #![deny(warnings)]
 #![no_std]
 #![no_main]
 #![feature(panic_info_message)]
 #![feature(alloc_error_handler)]
+#[cfg(feature = "board_qemu")]
+use crate::drivers::{GPU_DEVICE, KEYBOARD_DEVICE, MOUSE_DEVICE};
 
 extern crate alloc;
 
 #[macro_use]
 extern crate bitflags;
 
-use core::arch::global_asm;
-
+#[cfg(feature = "board_k210")]
+#[path = "boards/k210.rs"]
+mod board;
+#[cfg(not(any(feature = "board_k210")))]
 #[path = "boards/qemu.rs"]
 mod board;
+
 #[macro_use]
 mod console;
 mod config;
 mod drivers;
 mod fs;
+#[cfg(feature = "board_qemu")]
+mod gui;
 mod lang_items;
 mod mm;
 mod sbi;
@@ -44,11 +33,10 @@ mod task;
 mod timer;
 mod trap;
 
-mod logging;
+// use syscall::create_desktop; //for test
 
-global_asm!(include_str!("entry.asm"));
+core::arch::global_asm!(include_str!("entry.asm"));
 
-/// clear BSS segment
 fn clear_bss() {
     extern "C" {
         fn sbss();
@@ -60,20 +48,36 @@ fn clear_bss() {
     }
 }
 
-/// the rust entry-point of os
+use lazy_static::*;
+use sync::UPIntrFreeCell;
+
+lazy_static! {
+    pub static ref DEV_NON_BLOCKING_ACCESS: UPIntrFreeCell<bool> =
+        unsafe { UPIntrFreeCell::new(false) };
+}
+
 #[no_mangle]
 pub fn rust_main() -> ! {
     clear_bss();
-    logging::init();
-    log::info!("[kernel] Hello, world!");
     mm::init();
-    mm::remap_test();
-    drivers::gpu_device_test();
+    println!("KERN: init gpu");
+    #[cfg(feature = "board_qemu")]
+    GPU_DEVICE.clone();
+    println!("KERN: init keyboard");
+    #[cfg(feature = "board_qemu")]
+    KEYBOARD_DEVICE.clone();
+    println!("KERN: init mouse");
+    #[cfg(feature = "board_qemu")]
+    MOUSE_DEVICE.clone();
+    println!("KERN: init trap");
     trap::init();
     trap::enable_timer_interrupt();
     timer::set_next_trigger();
+    board::device_init();
     fs::list_apps();
+    //syscall::create_desktop(); //for test
     task::add_initproc();
+    *DEV_NON_BLOCKING_ACCESS.exclusive_access() = true;
     task::run_tasks();
     panic!("Unreachable in rust_main!");
 }

@@ -18,20 +18,20 @@ fn panic(info: &PanicInfo) -> ! {
     unsafe {
         backtrace();
     }
-    shutdown()
+    shutdown(255)
 }
 
 unsafe fn backtrace() {
     let mut fp: usize;
     let stop = current_kstack_top();
     asm!("mv {}, s0", out(reg) fp);
-    log::info!("---START BACKTRACE---");
+    println!("---START BACKTRACE---");
     for i in 0..10 {
         if fp == stop {
             break;
         }
-        log::info!("#{}:ra={:#x}", i, *((fp - 8) as *const usize));
+        println!("#{}:ra={:#x}", i, *((fp - 8) as *const usize));
         fp = *((fp - 16) as *const usize);
     }
-    log::info!("---END   BACKTRACE---");
+    println!("---END   BACKTRACE---");
 }

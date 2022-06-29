@@ -1,5 +1,3 @@
-use core::arch::asm;
-
 const SYSCALL_DUP: usize = 24;
 const SYSCALL_OPEN: usize = 56;
 const SYSCALL_CLOSE: usize = 57;
@@ -31,7 +29,7 @@ const SYSCALL_CONDVAR_WAIT: usize = 1032;
 fn syscall(id: usize, args: [usize; 3]) -> isize {
     let mut ret: isize;
     unsafe {
-        asm!(
+        core::arch::asm!(
             "ecall",
             inlateout("x10") args[0] => ret,
             in("x11") args[1],
@@ -155,4 +153,7 @@ pub fn sys_condvar_signal(condvar_id: usize) -> isize {
 
 pub fn sys_condvar_wait(condvar_id: usize, mutex_id: usize) -> isize {
     syscall(SYSCALL_CONDVAR_WAIT, [condvar_id, mutex_id, 0])
+}
+pub fn sys_create_desktop() -> isize {
+    syscall(2000, [0, 0, 0])
 }

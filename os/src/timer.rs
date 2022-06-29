@@ -2,7 +2,7 @@ use core::cmp::Ordering;
 
 use crate::config::CLOCK_FREQ;
 use crate::sbi::set_timer;
-use crate::sync::UPSafeCell;
+use crate::sync::UPIntrFreeCell;
 use crate::task::{add_task, TaskControlBlock};
 use alloc::collections::BinaryHeap;
 use alloc::sync::Arc;
@@ -50,25 +50,13 @@ impl Ord for TimerCondVar {
 }
 
 lazy_static! {
-    static ref TIMERS: UPSafeCell<BinaryHeap<TimerCondVar>> =
-        unsafe { UPSafeCell::new(BinaryHeap::<TimerCondVar>::new()) };
+    static ref TIMERS: UPIntrFreeCell<BinaryHeap<TimerCondVar>> =
+        unsafe { UPIntrFreeCell::new(BinaryHeap::<TimerCondVar>::new()) };
 }
 
 pub fn add_timer(expire_ms: usize, task: Arc<TaskControlBlock>) {
     let mut timers = TIMERS.exclusive_access();
     timers.push(TimerCondVar { expire_ms, task });
-}
-
-pub fn remove_timer(task: Arc<TaskControlBlock>) {
-    let mut timers = TIMERS.exclusive_access();
-    let mut temp = BinaryHeap::<TimerCondVar>::new();
-    for condvar in timers.drain() {
-        if Arc::as_ptr(&task) != Arc::as_ptr(&condvar.task) {
-            temp.push(condvar); 
-        }
-    }
-    timers.clear();
-    timers.append(&mut temp);
 }
 
 pub fn check_timer() {

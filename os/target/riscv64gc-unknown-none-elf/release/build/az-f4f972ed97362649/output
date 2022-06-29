@@ -1,0 +1,6 @@
+$ mkdir -p "/home/zfl/桌面/rCore/os/target/riscv64gc-unknown-none-elf/release/build/az-f4f972ed97362649/out/try_track_caller"
+$ cd "/home/zfl/桌面/rCore/os/target/riscv64gc-unknown-none-elf/release/build/az-f4f972ed97362649/out/try_track_caller"
+$ printf '%s' "// try_tra"... > "/home/zfl/桌面/rCore/os/target/riscv64gc-unknown-none-elf/release/build/az-f4f972ed97362649/out/try_track_caller/try_track_caller.rs"
+$ "rustc" "try_track_caller.rs" "--emit=dep-info,metadata" >& /dev/null
+cargo:rustc-cfg=track_caller
+$ rm -r "/home/zfl/桌面/rCore/os/target/riscv64gc-unknown-none-elf/release/build/az-f4f972ed97362649/out/try_track_caller"

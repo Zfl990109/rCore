@@ -15,11 +15,10 @@ use lazy_static::*;
 use manager::fetch_task;
 use process::ProcessControlBlock;
 use switch::__switch;
-use crate::timer::remove_timer;
 
 pub use context::TaskContext;
-pub use id::{kstack_alloc, pid_alloc, KernelStack, PidHandle};
-pub use manager::{add_task, remove_task, pid2process, remove_from_pid2process};
+pub use id::{kstack_alloc, pid_alloc, KernelStack, PidHandle, IDLE_PID};
+pub use manager::{add_task, pid2process, remove_from_pid2process};
 pub use processor::{
     current_kstack_top, current_process, current_task, current_trap_cx, current_trap_cx_user_va,
     current_user_token, run_tasks, schedule, take_current_task,
@@ -45,14 +44,20 @@ pub fn suspend_current_and_run_next() {
     schedule(task_cx_ptr);
 }
 
-pub fn block_current_and_run_next() {
+/// This function must be followed by a schedule
+pub fn block_current_task() -> *mut TaskContext {
     let task = take_current_task().unwrap();
     let mut task_inner = task.inner_exclusive_access();
-    let task_cx_ptr = &mut task_inner.task_cx as *mut TaskContext;
     task_inner.task_status = TaskStatus::Blocking;
-    drop(task_inner);
+    &mut task_inner.task_cx as *mut TaskContext
+}
+
+pub fn block_current_and_run_next() {
+    let task_cx_ptr = block_current_task();
     schedule(task_cx_ptr);
 }
+#[cfg(feature = "board_qemu")]
+use crate::board::QEMUExit;
 
 pub fn exit_current_and_run_next(exit_code: i32) {
     let task = take_current_task().unwrap();
@@ -69,7 +74,22 @@ pub fn exit_current_and_run_next(exit_code: i32) {
     // however, if this is the main thread of current process
     // the process should terminate at once
     if tid == 0 {
-        remove_from_pid2process(process.getpid());
+        let pid = process.getpid();
+        #[cfg(feature = "board_qemu")]
+        if pid == IDLE_PID {
+            println!(
+                "[kernel] Idle process exit with exit_code {} ...",
+                exit_code
+            );
+            if exit_code != 0 {
+                //crate::sbi::shutdown(255); //255 == -1 for err hint
+                crate::board::QEMU_EXIT_HANDLE.exit_failure();
+            } else {
+                //crate::sbi::shutdown(0); //0 for success hint
+                crate::board::QEMU_EXIT_HANDLE.exit_success();
+            }
+        }
+        remove_from_pid2process(pid);
         let mut process_inner = process.inner_exclusive_access();
         // mark this process as a zombie process
         process_inner.is_zombie = true;
@@ -91,13 +111,6 @@ pub fn exit_current_and_run_next(exit_code: i32) {
         let mut recycle_res = Vec::<TaskUserRes>::new();
         for task in process_inner.tasks.iter().filter(|t| t.is_some()) {
             let task = task.as_ref().unwrap();
-            // if other tasks are Ready in TaskManager or waiting for a timer to be
-            // expired, we should remove them.
-            //
-            // Mention that we do not need to consider Mutex/Semaphore since they
-            // are limited in a single process. Therefore, the blocked tasks are
-            // removed when the PCB is deallocated.
-            remove_inactive_task(Arc::clone(&task));
             let mut task_inner = task.inner_exclusive_access();
             if let Some(res) = task_inner.res.take() {
                 recycle_res.push(res);
@@ -115,8 +128,6 @@ pub fn exit_current_and_run_next(exit_code: i32) {
         process_inner.memory_set.recycle_data_pages();
         // drop file descriptors
         process_inner.fd_table.clear();
-        // remove all tasks
-        process_inner.tasks.clear();
     }
     drop(process);
     // we do not have to save task context
@@ -146,9 +157,4 @@ pub fn current_add_signal(signal: SignalFlags) {
     let process = current_process();
     let mut process_inner = process.inner_exclusive_access();
     process_inner.signals |= signal;
-}
-
-pub fn remove_inactive_task(task: Arc<TaskControlBlock>) {
-    remove_task(Arc::clone(&task));
-    remove_timer(Arc::clone(&task));
 }
