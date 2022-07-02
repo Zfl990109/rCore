@@ -182,7 +182,7 @@
 
 - 游戏的具体实现
 
-  - 创建 SnakeGame 对象，包括一个 panel、food 以及 snake，其中 food 用 Button 来表示，snake 则用 VecDeque<Button> 来表示，直接利用 button 的 paint 方法来画图，不用再额外写一个直接操作 point 画图的函数，在创建 SnakeGame 时，food 以及 snake 的位置直接固定了，创建的代码不再贴在此处
+  - 创建 SnakeGame 对象，包括一个 panel、food 以及 snake，其中 food 用 Button 来表示，snake 则用 VecDeque 来表示，直接利用 button 的 paint 方法来画图，不用再额外写一个直接操作 point 画图的函数，在创建 SnakeGame 时，food 以及 snake 的位置直接固定了，创建的代码不再贴在此处
 
     ```rust
     pub struct SnakeGame {
