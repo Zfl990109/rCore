@@ -17,7 +17,7 @@
 
 - `manager.rs`：静态的进程管理，向外提供插入新的进程，以及取出就绪进程的接口
 
-  ```
+  ```rust
   pub fn add_task(task: Arc<TaskControlBlock>) {
       TASK_MANAGER.exclusive_access().add(task);
   }
@@ -38,7 +38,7 @@
 
 - `sys_fork` ，需要 `TCB` 提供 `fork` 函数根据当前进程的地址空间来构造子进程的地址空间（具体的实现在 `memory_set.rs` 中），维护进程之间的父子关系，
 
-  ```
+  ```rust
   // TaskControlBlock::fork()
   pub fn fork(self: &Arc<TaskControlBlock>) -> Arc<TaskControlBlock> {
   	let mut parent_inner = self.inner_exclusive_access();
@@ -95,7 +95,7 @@
 
 - `sys_exec`：先获取到对应的进程的 `elf` 文件数据，然后使用 `TCB` 提供 `exec` 函数
 
-  ```
+  ```rust
   // TaskControlBlock::exec()
   pub fn exec(&self, elf_data: &[u8]) {
   	// 构造新的地址空间
@@ -134,7 +134,7 @@
 
 - `sys_waitpid`：根据 `pid`来进行相关的处理，若当前进程的子进程中没有对应 `pid` 的子进程，则返回 -1，若找到了子进程，但是子进程正在执行，则返回 -2，正常情况下会直接回收掉对用的子进程
 
-  ```
+  ```rust
   pub fn sys_waitpid(pid: isize, exit_code_ptr: *mut i32) -> isize {
       let task = current_task().unwrap();
       let mut inner = task.inner_exclusive_access();
@@ -175,7 +175,7 @@
 
 - `spawn` 创建进程，将 `fork` 和 `exec` 两个系统调用整合到一起，先将应用名转化到内核中，然后利用在 `TCB` 中实现的 `spawn` 方法构建新进程的 `TCB` 
 
-  ```
+  ```rust
   // syscall/process sys_spawn
   pub fn sys_spawn(path: *const u8) -> isize {
       let token = current_user_token();

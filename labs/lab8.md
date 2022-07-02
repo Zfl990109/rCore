@@ -10,7 +10,7 @@
 
 - 任务控制块转化为线程控制块 `TaskControlBlock` ，创建进程控制块 `ProcessControlBlock` ，并且对创建进程的相关方法进行修改
 
-  ```
+  ```rust
   // 进程控制块
   pub struct ProcessControlBlock {
       // immutable
@@ -52,7 +52,7 @@
 
 - 锁机制，对外提供 `lock` 和 `unlock` 接口，会记录被阻塞的线程
 
-  ```
+  ```rust
   pub struct MutexBlocking {
       inner: UPSafeCell<MutexBlockingInner>,
   }
@@ -64,7 +64,7 @@
 
 - 信号量机制，对外提供 `up` 和 `down` 接口，会记录被阻塞的线程，与锁机制类似
 
-  ```
+  ```rust
   pub struct Semaphore {
       pub inner: UPSafeCell<SemaphoreInner>,
   }
@@ -76,7 +76,7 @@
 
 - 条件变量机制，同锁机制和信号量机制类似，但是内部并不维护标志位，操作系统需要显式地施加某种控制
 
-  ```
+  ```rust
   pub struct Condvar {
       pub inner: UPSafeCell<CondvarInner>,
   }
@@ -87,7 +87,7 @@
 
 - 上述同步互斥机制是内核提供的数据结构，好需要在进程内部维护好相应的信息
 
-  ```
+  ```rust
   pub struct ProcessControlBlockInner {
   	……
       pub mutex_list: Vec<Option<Arc<dyn Mutex>>>,
@@ -102,7 +102,7 @@
 
   - 创建 `Eventfd` 数据结构，实现 `new` 方法
 
-    ```
+    ```rust
     pub struct Eventfd {
     	readable: bool,
     	writable: bool,
@@ -142,7 +142,7 @@
 
   - 实现 `File` 特性，在读文件时通过外部的 `loop` 循环来保证可以在计数值为零时可以阻塞当前线程，读写通过 `byteorder` 依赖包的来完成 `UserBuffer` 与 `u64` 之间的转化
 
-    ```
+    ```rust
     impl File for Eventfd {
     	fn readable(&self) -> bool {
             self.readable

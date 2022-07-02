@@ -64,7 +64,7 @@
 
 - 在 `boards` 和 `drivers` 模块中添加相关的设置，将 `virtio` 端口映射到 `0x10001000 ~ 0x10002000` 这一块区域，并添加在内核的地址空间中
 
-  ```
+  ```rust
   // memory_set::new_kernel
   for pair in MMIO {
   	memory_set.push(
@@ -90,7 +90,7 @@
 
 - 修改 `os/Makefile` 文件，使用 `easy-fs-fuse` 中的脚本，将应用程序编译后写入到 `fs-img` 块设备中，并且启动 `qemu` 时加载块设备
 
-  ```
+  ```rust
   fs-img: $(APPS)
   	@cd ../user && make build
   	@rm -f $(FS_IMG)
@@ -113,7 +113,7 @@
 
   - `linkat`：在根节点中先找到旧文件名对应的文件的 `inode_id`，然后创建新文件的目录，指向 `inode_id`
 
-    ```
+    ```rust
     pub fn linkat(&self, newname: &str, oldname: &str) {
     	let mut fs = self.fs.lock();
         let mut inode_id = 0;
@@ -137,7 +137,7 @@
 
   - `unlinkat`：在根节点中找到文件名对应的目录，然后删除目录
 
-    ```
+    ```rust
     pub fn unlinkat(&self, name: &str) -> isize {
     	self.modify_disk_inode(|root_inode| {
         	let file_count = (root_inode.size as usize) / DIRENT_SZ;
@@ -161,7 +161,7 @@
 
   - `fstat`：提供的接口是文件的 `fd`，然而进程的 `fd_table` 中存放的是实现了 `File` 特性的数据结构，并不一定是 `OSInode`，因此，我直接在 `File` 特性中新增了 `fstat` 方法（对 `Rust` 不熟悉，只能采用这种方法了），但是需要先实现根据 `block_id` 和 `offset` 获取 `inode_id` 的方法。 统计文件的引用计数时，需要遍历目录。
 
-    ```
+    ```rust
     // File trait
     fn fstat(&self) -> (u64, StatMode, u32) {
     	let inner = self.inner.exclusive_access();

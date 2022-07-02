@@ -15,7 +15,7 @@
 
 - 管道实际上只是内存中的一段缓冲区，只不过被抽象成文件，供两个进程进行单向通信，向外提供了 `make_pipe` 接口
 
-  ```
+  ```rust
   pub struct Pipe {
       readable: bool,
       writable: bool,
@@ -33,7 +33,7 @@
 
 - 在内核中系统调用中新增相关的接口，只能单向通信，调用 `sys_pipe` 的进程会同时在 `fd_table` 中保存 `pipe` 两端的文件描述符，在返回到用户态之后需要关闭另一个文件描述符
 
-  ```
+  ```rust
   pub fn sys_pipe(pipe: *mut usize) -> isize {
       let task = current_task().unwrap();
       let token = current_user_token();
@@ -53,7 +53,7 @@
 
 - 读取命令行参数，在 `user_shell.rs` 中创建 `ProcessArguments`  数据结构，在 `main` 函数中读取命令，对命令进行解析，判断是否有 `|` 以及重定向标识符
 
-  ```
+  ```rust
   #[derive(Debug)]
   struct ProcessArguments {
       input: String,              // 输入文件名
@@ -65,7 +65,7 @@
 
 - 应用程序库修改 `sys_exec` 系统调用接口，增加命令行参数
 
-  ```
+  ```rust
   pub fn exec(path: &str, args: &[*const u8]) -> isize {
       sys_exec(path, args)
   }
@@ -73,7 +73,7 @@
 
 - 命令行参数的传递以及进程获取用户栈中的命令行参数
 
-  ```
+  ```rust
   // syscall/process sys_exec 获取 user_shell 进程地址空间参数
   pub fn sys_exec(path: *const u8, mut args: *const usize) -> isize {
       let token = current_user_token();
@@ -181,7 +181,7 @@
 
   - 每个进程都有一个信号处理表 `signal_actions`，其中记录了信号处理例程的地址以及标志位，上述系统调用就是对信号处理例程进行设置，`sys_sigaction` 的主要工作就是保存该进程的 `signal_actions` 中对应信号的 `sigaction` 到 `old_action` 中，然后再把新的 `ref_action` 保存到该进程的 `signal_actions` 对应项中。
 
-    ```
+    ```rust
     pub fn sys_sigaction(
         signum: i32,
         action: *const SignalAction,
@@ -217,7 +217,7 @@
 
   - 进程在进入内核时，先进行正常的处理，执行完毕后在进入用户态时，会检查自己是否收到了信号 `check_pending_signals`，如果收到信号，则会调用 `call_user_signal_handler` 或者 `call_kernel_signal_handler` ，对进程的 `TrapContext` 中的 `sepc` 进行修改，使其返回用户态时进入到进程的信号处理例程
 
-    ```
+    ```rust
     // trap/mod.rs
     pub fn trap_handler() -> ! {
         set_kernel_trap_entry();
@@ -258,7 +258,7 @@
 
   - 信号处理例程执行完毕后，调用`sys_sigretrun` 系统调用，将进程 `TCB` 的 `TrapContext` 恢复成信号处理之前的备份，之后返回用户态即可回到进程正常的运行流程
 
-    ```
+    ```rust
     pub fn sys_sigretrun() -> isize {
         if let Some(task) = current_task() {
             let mut inner = task.inner_exclusive_access();

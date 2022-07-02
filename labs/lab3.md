@@ -18,7 +18,7 @@
 
 - 用 `loader` 子模块替换 `batch` 子模块，加载应用程序到不同的地址
 
-  ```
+  ```rust
   /// 加载第 i 个应用程序到 [0x80400000 + i * 0x20000, 0x80400000 + (i + 1) * 0x20000)
   pub fn load_apps() {
       extern "C" {
@@ -49,7 +49,7 @@
 
 - 为每个应用程序准备好各自的内核栈和用户栈
 
-  ```
+  ```rust
   struct KernelStack {
       data: [u8; KERNEL_STACK_SIZE],
   }
@@ -81,7 +81,7 @@
 
   - `context.rs`  负责保存内核进程切换时的上下文`TaskContext`，包括`ra`、`sp`、`s0 ~ s11`，`goto_restore(kstack_ptr)` 函数设置 `TaskContext` 的返回地址为 `__restore`，内核栈为 `kstack_ptr`
 
-    ```
+    ```rust
     #[derive(Copy, Clone)]
     #[repr(C)]
     pub struct TaskContext {
@@ -91,7 +91,7 @@
     }
     ```
 
-    ```
+    ```rust
     pub fn goto_restore(kstack_ptr: usize) -> Self {
     	extern "C" {
     		fn __restore();
@@ -106,7 +106,7 @@
 
   - `switch.S` 以及 `switch.rs` 完成内核进程切换上下文的保存与恢复
 
-    ```
+    ```rust
     __switch:
         # __switch(cur_task_cx, next_task_cx)
         # a0: cur_task_cx    a1: next_task_cx
@@ -135,7 +135,7 @@
 
     - `TaskManager` ，内部是一个 `TCB` 向量
 
-      ```
+      ```rust
       pub struct TaskManager {
           num_app: usize,
           inner: UPSafeCell<TaskManagerInner>,
@@ -188,7 +188,7 @@
 
   - 在 `task/task.rs` 建立 `TaskInfo` 数据结构，并在 `TCB` 中添加相关的信息
 
-    ```
+    ```rust
     pub const MAX_SYSCALL_NUM : usize = 100;		// 支持的 syscall 的最大数量
     #[derive(Copy, Clone)]
     pub struct SyscallInfo {
@@ -225,7 +225,7 @@
     
   - `syscall` 模块的 `process.rs` 中添加相应的接口，没有建立地址空间隔离，因此这里是对应用程序的内存区域中的 TaskInfo 直接进行修改
 
-    ```
+    ```rust
     pub fn sys_get_task_info(id: usize, ts: *mut TaskInfo) -> isize {
         get_task_info(id, ts)
     }
@@ -233,7 +233,7 @@
 
   - 在 `task/mod.rs` 中实现 `get_task_info(id, ts)` 函数，获取对应的信息
 
-    ```
+    ```rust
     pub fn get_task_info(id: usize, ts: *mut TaskInfo) -> isize {
         TASK_MANAGER.get_task_info(id, ts)
     }
@@ -254,7 +254,7 @@
 
   - 更新应用程序的系统调用信息，应用程序一旦执行系统调用，在 `trap_handler` 中先执行 `record_current_task_syscall` 记录其信息，再执行对应的系统调用
 
-    ```
+    ```rust
     Trap::Exception(Exception::UserEnvCall) => {
     	record_current_task_syscall(cx.x[17]);
         cx.sepc += 4;
@@ -262,7 +262,7 @@
     }
     ```
 
-    ```
+    ```rust
     pub fn record_current_task_syscall(syscall_id: usize) {
         TASK_MANAGER.record_current_task_syscall(syscall_id);
     }
@@ -286,7 +286,7 @@
 
   - 更新应用程序运行时间，在进行切换之前，更新上一个应用的运行时间，设置下一个应用的 `last_start_time`（注意：需要在 `run_first_task` 和 `run_next_task`中添加相应的逻辑）
 
-    ```
+    ```rust
     // run_first_task
     task0.task_info.last_start_time = get_time();
     
@@ -303,7 +303,7 @@
 
   - 实验结果，在统计 `sys_write` 系统调用时与期望的值不同，与格式串中的参数有关，例如:
 
-    ```
+    ```rust
     println!("power_3 [{}/{}]", i, iter);	// times + 5
     println!("{}^{} = {}(MOD {})", p, iter, s[cur], m);		// times + 8
     println!("Test power_3 OK!");		// times + 1
@@ -316,7 +316,7 @@
 
   - 添加 `stack_trace` 子模块，并在 `panic` 时打印调用链，函数调用压栈时，编译器会加上 `ra` 和上一个 `fp`，因此只需要获取当前的 `fp` 即可获得相应的信息，然后迭代即可
 
-    ```
+    ```rust
     use core::{arch::asm, ptr};
     #[inline(always)]
     pub fn print_stack_trace() {

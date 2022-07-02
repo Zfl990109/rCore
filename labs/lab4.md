@@ -78,7 +78,7 @@
 
   - `MemorySet` 表示地址空间，地址空间由页表以及许多个离散的 `MapArea` 构成
 
-    ```
+    ```rust
     pub struct MemorySet {
         page_table: PageTable,
         areas: Vec<MapArea>,
@@ -105,7 +105,7 @@
 
   - `MapArea` 表示一块连续的虚拟地址
 
-    ```
+    ```rust
     pub struct MapArea {
         vpn_range: VPNRange,
         data_frames: BTreeMap<VirtPageNum, FrameTracker>,
@@ -132,7 +132,7 @@
 
 - `TCB` 中增加地址空间等相关信息，并实现相关的方法
 
-  ```
+  ```rust
   pub struct TaskControlBlock {
       pub task_status: TaskStatus,
       pub task_cx: TaskContext,
@@ -152,7 +152,7 @@
 
 - 任务管理器 `TASK_MANAGER` 初始化时采用动态内存分配，并且根据应用程序的 `elf` 文件来构造应用程序的地址空间，并且增加管理当前进程的相关方法： `get_current_token`、`get_current_trap_cx` 
 
-  ```
+  ```rust
   pub static ref TASK_MANAGER: TaskManager = {
   	println!("init TASK_MANAGER");
       let num_app = get_num_app();
@@ -173,7 +173,7 @@
   };
   ```
 
-  ```
+  ```rust
   fn get_current_token(&self) -> usize {
   	let inner = self.inner.exclusive_access();
       inner.tasks[inner.current_task].get_user_token()
@@ -188,7 +188,7 @@
 
 - `TrapContext` 数据结构增加相关信息，并修改 `app_init_context` 函数，保证切换地址空间后能够完成处理
 
-  ```
+  ```rust
   pub struct TrapContext {
       pub x: [usize; 32],
       pub sstatus: Sstatus,
@@ -199,7 +199,7 @@
   }
   ```
 
-  ```
+  ```rust
   pub fn app_init_context(
       entry: usize,
       sp: usize,
@@ -224,7 +224,7 @@
 
 -  `trap.S` 中的 `__alltraps` 、 `__restore` 函数增加地址空间切换的过程，将 `TrapContext` 保存到应用程序的地址空间中，而不是简单的保存在应用程序内核栈中
 
-  ```
+  ```rust
   __alltraps:
   	……
       csrw satp, t0
@@ -240,7 +240,7 @@
 
 - `mod.rs` 增加在内核态发生中断、异常的处理过程，提前梳理好框架，方便后续实验
 
-  ```
+  ```rust
   pub fn init() {
       set_kernel_trap_entry();
   }
@@ -292,7 +292,7 @@
 
     > 建立跳板机制，在物理内存中专门申请一个物理页，里面是 `__alltraps` 和 `__restore` 函数，所有的应用程序都共用这一个物理页，其虚拟地址为应用程序自己地址空间的最高页
 
-    ```
+    ```rust
     .section .text.trampoline
     .globl __alltraps
     .globl __restore
@@ -322,7 +322,7 @@
 
   - 在 `task/mod.rs` 中增加相关的处理过程，需要在 `mm/memory_set.rs` 中实现 `find_vpn` 和 `munmap` 方法，`mmap` 调用当前地址空间 `memoryset` 的 `insert_framed_area` 方法，对这一块虚拟地址空间中的每个虚拟页逐个映射，`munmap` 则调用自己实现的 `munmap` 函数解除地址映射关系
 
-    ```
+    ```rust
     fn mmap(&self, start: usize, len: usize, prot: usize) -> isize {
     	if (start % PAGE_SIZE) != 0 || (prot & !0x7 != 0) || (prot & 0x7 == 0) {
     		return -1;

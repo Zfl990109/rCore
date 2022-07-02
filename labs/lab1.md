@@ -14,7 +14,7 @@
 
 - `bootloader` 加载内核镜像，跳转至内核 `rust_main` 函数（绝对地址 `0x80200000`），是 `entry.asm` 中的 `_start` 函数，不是之后在内核中定义的 `rust_main` 函数
 
-  ```
+  ```rust
   #[link_section = ".text.entry"]
   #[export_name = "_start"]
   unsafe extern "C" fn entry(_a0: usize, _a1: usize) -> ! {
@@ -46,7 +46,7 @@
 
 - 在 `entry.asm` 文件中定义 `.bss.stack` 段，声明其大小为 `64KB` 
 
-  ```
+  ```rust
   .section .bss.stack
   .globl boot_stack
   boot_stack:
@@ -57,7 +57,7 @@
 
 - 根据 `linker_qemu.ld` 文件链接时，会将 `boot_stack` 放在 `.bss` 段首部
 
-  ```
+  ```rust
   .bss : {
       *(.bss.stack)
       sbss = .;
@@ -81,7 +81,7 @@
 
 - 基于 Log 库实现，并且需要创建一个全局的 LOGGER，因此需要在 `Cargo.toml` 中添加相关依赖
 
-  ```
+  ```rust
   [dependencies]
   lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
   log = "0.4"
@@ -89,7 +89,7 @@
 
 - 新建 logging 子模块，建立 SimpleLogger 数据结构，并添加 `new()` 方法
 
-  ```
+  ```rust
   // SimpleLogger 数据结构，只包括了 LOG_LEVEL
   struct SimpleLogger{
       level_filter: LevelFilter
@@ -112,7 +112,7 @@
 
 - 为 `SimpleLogger` 实现 Log 特性
 
-  ```
+  ```rust
   fn level_to_color_code(level: Level) -> u8 {
       match level {
           Level::Error => 31, // Red
@@ -156,7 +156,7 @@
 
 - 初始化 LOGGER，使用 `lazy_static!` 以及 `static ref` 使得一开始并不会创建 `LOGGER` ，只有运行到`main.rs` 中调用 `logging::init()` 时才会根据命令行输入的指令初始化 `LOGGER`
 
-  ```
+  ```rust
   lazy_static!{
       static ref LOGGER: SimpleLogger = SimpleLogger::new();   
   }

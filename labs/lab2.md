@@ -19,7 +19,7 @@
 
   - `console.rs` 同内核相似，为 `Stdout` 实现 `Write` 特性时，不再使用 `console_putchar` 函数，而是使用 `lib.rs` 提供的系统调用 `write`
 
-    ```
+    ```rust
     impl Write for Stdout {
         fn write_str(&mut self, s: &str) -> fmt::Result {
             write(STDOUT, s.as_bytes());
@@ -32,7 +32,7 @@
 
   - `lib.rs` 提供系统调用的用户层接口，以及一个弱链接的 `main` 函数（避免没有应用程序时无法编译）
 
-    ```
+    ```rust
     use syscall::*;
     pub fn write(fd: usize, buf: &[u8]) -> isize {
         sys_write(fd, buf)
@@ -52,7 +52,7 @@
 
   - `syscall.rs` ，用户层的系统调用根据各自的 `syscall_id` 从统一的 `syscall` 函数进入内核，与内核 `sbi.rs` 相同，若系统调用有返回值，则是通过 `x10` 寄存器来返回
 
-    ```
+    ```rust
     fn syscall(id: usize, args: [usize; 3]) -> isize {
         let mut ret: isize;
         unsafe {
@@ -74,7 +74,7 @@
 
   - `os/build.rs`  脚本生成汇编文件 `os/src/link_app.S`，然后通过 `link_app.S` 将应用程序 `user/src/bin/*.rs` 编译出来的去掉元信息的二进制文件链接到内核的数据段中，并且添加相关的起始地址等信息，方便之后管理应用程序
 
-    ```
+    ```rust
     .align 3
         .section .data
         .global _num_app
@@ -105,7 +105,7 @@
 - `trap` 子模块，完成特权级转换过程中的上下文保存与恢复，以及发生中断、异常、系统调用时的处理
   - `TrapContext` 保存上一个特权级上下文，需要保存通用寄存器，`pc` 以及 `sstatus` 寄存器
   
-    ```
+    ```rust
     #[repr(C)]
     pub struct TrapContext {
         pub x: [usize; 32],		// 通用寄存器
@@ -118,7 +118,7 @@
   
   - `TrapContext.app_init_context` 用于应用程序初始化，之后再无其他用处；CPU 只能通过 `*ret` 的方式从高特权级进入低特权级，因此需要先提供低特权级模式下的上下文，将其中的 `pc`、`sp` 设置为期望的应用程序的入口和用户栈顶，并且将 `sstatus` 设置为用户态
   
-    ```
+    ```rust
     impl TrapContext {
         /// set stack pointer to x_2 reg (sp)
         pub fn set_sp(&mut self, sp: usize) {
@@ -143,7 +143,7 @@
   
     - `__alltraps` 函数
   
-      ```
+      ```rust
       __alltraps:
           csrrw sp, sscratch, sp
           # 从用户态的栈切换到内核态的栈，sscratch 寄存器将保存用户态的栈指针
@@ -172,7 +172,7 @@
   
     - `__restore` 函数
   
-    ```
+    ```rust
     __restore:
         # __restore 函数只在两种情况下使用
         # 一是应用程序第一次运行；而是从应用程序进入内核后返回用户态
@@ -204,7 +204,7 @@
   
   - `mod.rs` 完成具体的 `trap_handler` 过程，并且完成 `trap` 模块的初始化，将 `__alltraps` 函数的地址写入 `stvec` 寄存器，发生中断、异常、系统调用时，`CPU` 会自动跳转到 `__alltraps` 处
   
-    ```
+    ```rust
     /// 将 __alltraps 函数的地址写入 stvec 寄存器
     pub fn init() {
         extern "C" {
@@ -251,7 +251,7 @@
 
   - 根据 `link_app.S` 中的信息来构建 `AppManager` 
 
-    ```
+    ```rust
     struct AppManager {
         num_app: usize,
         current_app: usize,
@@ -281,7 +281,7 @@
 
   - 初始化应用程序的内核栈和用户栈，均为 `8KB`，且都实现了 `get_sp()` 方法，内核栈 `KernelStack` 实现了 `push_context(cx: TrapContext)` 方法。目前还没有实现内存分配，因此直接将内核栈和用户栈编译进内核的数据段中
 
-    ```
+    ```rust
     static KERNEL_STACK: KernelStack = KernelStack {
         data: [0; KERNEL_STACK_SIZE],
     };
@@ -301,7 +301,7 @@
 
   - AppManager 从内核数据段中加载应用程序到 `APP_BASE_ADDRESS(0x80400000)` 处 
 
-    ```
+    ```rust
     unsafe fn load_app(&self, app_id: usize) {
         if app_id >= self.num_app {
         	panic!("All applications completed!");
@@ -320,7 +320,7 @@
 
   - `run_next_app()` 调用 `app_manager.load_app(current_app)` 加载应用程序，然后在应用程序的内核栈中准备好 `TrapContext` 
 
-    ```
+    ```rust
     pub fn run_next_app() -> ! {
         let mut app_manager = APP_MANAGER.exclusive_access();
         let current_app = app_manager.get_current_app();
@@ -352,7 +352,7 @@
 
 - 应用程序本身内存空间的数据有两类，一类是直接编译在 `elf` 文件的 `data` 、`bss` 段中，另一类则是在应用程序的用户栈中，因此进行安全检查时，需要检查指针是否指向这两个内存空间（注意：需要将 `UserStack` 相关的数据结构与方法声明为 `pub`类型）
 
-  ```
+  ```rust
   const FD_STDOUT: usize = 1;
   const APP_BASE_ADDRESS: usize = 0x80400000;
   const APP_SIZE_LIMIT: usize = 0x20000;
