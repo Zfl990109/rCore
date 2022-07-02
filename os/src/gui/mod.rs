@@ -4,6 +4,9 @@ mod icon;
 mod image;
 mod panel;
 mod terminal;
+mod window;
+mod desktop;
+mod snake;
 use alloc::sync::Arc;
 pub use button::*;
 use core::any::Any;
@@ -13,6 +16,9 @@ pub use icon::*;
 pub use image::*;
 pub use panel::*;
 pub use terminal::*;
+pub use window::*;
+pub use desktop::*;
+pub use snake::*;
 
 pub trait Component: Send + Sync + Any {
     fn paint(&self);

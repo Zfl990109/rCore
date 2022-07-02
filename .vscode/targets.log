@@ -15,47 +15,80 @@ make: *** No rule to make target 'all'.  Stop.
  
 
  
-# Make data base, printed on Sun Jun 26 16:19:06 2022
+# Make data base, printed on Sat Jul  2 08:12:14 2022
  
 
 # Variables
+ 
 
+ 
 # 'override' directive
+ 
 GNUMAKEFLAGS := 
+ 
 # automatic
+ 
 <D = $(patsubst %/,%,$(dir $<))
+ 
 # automatic
+ 
 ?F = $(notdir $?)
+ 
 # environment
+ 
 DESKTOP_SESSION = ubuntu
+ 
 # default
+ 
 .SHELLFLAGS := -c
+ 
 # environment
+ 
 XDG_SESSION_TYPE = x11
+ 
 # environment
+ 
 VSCODE_LOG_NATIVE = false
+ 
 # automatic
+ 
 ?D = $(patsubst %/,%,$(dir $?))
+ 
 # environment
+ 
 IM_CONFIG_PHASE = 2
+ 
 # automatic
+ 
 @D = $(patsubst %/,%,$(dir $@))
+ 
 # environment
+ 
 XAUTHORITY = /run/user/1000/gdm/Xauthority
+ 
 # environment
+ 
 GDMSESSION = ubuntu
+ 
 # environment
+ 
 XMODIFIERS = @im=ibus
+ 
 # makefile
+ 
 CURDIR := /home/zfl/桌面/rCore
+ 
 # makefile
+ 
 SHELL = /bin/sh
+ 
 # environment
 VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"bbca1a7059cee8a1b93da8947fee1c4f.zh-cn","_translationsConfigFile":"/home/zfl/.config/Code/clp/bbca1a7059cee8a1b93da8947fee1c4f.zh-cn/tcf.json","_cacheRoot":"/home/zfl/.config/Code/clp/bbca1a7059cee8a1b93da8947fee1c4f.zh-cn","_resolvedLanguagePackCoreLocation":"/home/zfl/.config/Code/clp/bbca1a7059cee8a1b93da8947fee1c4f.zh-cn/30d9c6cd9483b2cc586687151bcbcd635f373630","_corruptedFile":"/home/zfl/.config/Code/clp/bbca1a7059cee8a1b93da8947fee1c4f.zh-cn/corrupted.info","_languagePackSupport":true}
 # environment
 _ = /usr/share/code/code
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
+ 
 # makefile
 MAKEFILE_LIST := 
 # automatic
@@ -79,11 +112,11 @@ VSCODE_CWD = /home/zfl
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/zfl/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/zfl/qemu-5.0.0:/home/zfl/qemu-5.0.0/riscv64-softmmu:/home/zfl/qemu-5.0.0/riscv64-linux-user:/home/zfl/riscv_toolchain/bin
+PATH = /home/zfl/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/zfl/qemu-7.0.0/build:/home/zfl/qemu-7.0.0/build/riscv64-softmmu:/home/zfl/qemu-7.0.0/build/riscv64-linux-user:/home/zfl/riscv_toolchain/bin
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/zfl-Surface-Pro:@/tmp/.ICE-unix/1079,unix/zfl-Surface-Pro:/tmp/.ICE-unix/1079
+SESSION_MANAGER = local/zfl-Surface-Pro:@/tmp/.ICE-unix/1102,unix/zfl-Surface-Pro:/tmp/.ICE-unix/1102
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -103,7 +136,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 27464
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2141
 # automatic
 %F = $(notdir $%)
 # environment
@@ -117,7 +150,7 @@ PWD = /home/zfl/桌面/rCore
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1174
+SSH_AGENT_PID = 1198
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -133,7 +166,7 @@ VSCODE_CODE_CACHE_PATH = /home/zfl/.config/Code/CachedData/30d9c6cd9483b2cc58668
 # environment
 LOGNAME = zfl
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
@@ -144,6 +177,7 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
 XDG_VTNR = 1
+ 
 # environment
 MAKELEVEL := 0
 # default
@@ -157,7 +191,7 @@ SHLVL = 1
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-2f3a0d38-0d2d-498f-8eb5-a3f829a5d8de.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-e7c86d56-5c03-4564-a90e-b28b5b1c4c58.sock
 # environment
 XDG_SESSION_ID = 1
 # environment
@@ -221,7 +255,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 27464
+VSCODE_PID = 2141
 # variable set hash-table stats:
 # Load=101/1024=10%, Rehash=0, Collisions=14/123=11%
 
@@ -231,9 +265,9 @@ VSCODE_PID = 27464
 
 # Directories
 
-# . (device 66307, inode 9597541): 11 files, no impossibilities.
+# . (device 66307, inode 9597541): 12 files, no impossibilities.
 
-# 11 files, no impossibilities in 1 directories.
+# 12 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -247,6 +281,7 @@ all:
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has not been updated.
+ 
 
 # Not a target:
 Makefile:
@@ -283,12 +318,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 19 / storage = 162 B / avg = 8 B
-# current buf: size = 8162 B / used = 162 B / count = 19 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 20 / storage = 192 B / avg = 9 B
+# current buf: size = 8162 B / used = 192 B / count = 20 / avg = 9 B
 
-# strcache performance: lookups = 22 / hit rate = 13%
+# strcache performance: lookups = 23 / hit rate = 13%
 # hash-table stats:
-# Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
-# Finished Make data base on Sun Jun 26 16:19:06 2022
+# Load=20/8192=0%, Rehash=0, Collisions=1/23=4%
+# Finished Make data base on Sat Jul  2 08:12:14 2022
 
  

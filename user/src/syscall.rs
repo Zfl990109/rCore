@@ -157,3 +157,6 @@ pub fn sys_condvar_wait(condvar_id: usize, mutex_id: usize) -> isize {
 pub fn sys_create_desktop() -> isize {
     syscall(2000, [0, 0, 0])
 }
+pub fn sys_create_app() -> isize {
+    syscall(2001, [0, 0, 0])
+}

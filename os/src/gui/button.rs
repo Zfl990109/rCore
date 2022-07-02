@@ -20,7 +20,7 @@ pub struct Button {
 }
 
 pub struct ButtonInner {
-    graphic: Graphics,
+    pub graphic: Graphics,
     text: String,
     parent: Option<Arc<dyn Component>>,
 }
@@ -47,6 +47,17 @@ impl Button {
                 })
             },
         }
+    }
+
+    pub fn move_to(&self, point: Point) {
+        let (size, _) = self.bound();
+        let mut inner = self.inner.exclusive_access();
+        inner.graphic = Graphics {
+            size,
+            point,
+            drv: GPU_DEVICE.clone(),
+        };
+        // self.paint();
     }
 }
 

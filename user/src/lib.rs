@@ -8,6 +8,7 @@
 pub mod console;
 mod lang_items;
 mod syscall;
+mod gui;
 
 extern crate alloc;
 #[macro_use]
@@ -201,6 +202,13 @@ pub fn condvar_wait(condvar_id: usize, mutex_id: usize) {
 pub fn create_desktop() {
     sys_create_desktop();
 }
+
+pub fn create_app() {
+    sys_create_app();
+}
+
+
+
 #[macro_export]
 macro_rules! vstore {
     ($var_ref: expr, $value: expr) => {

@@ -26,6 +26,8 @@ const SYSCALL_CONDVAR_CREATE: usize = 1030;
 const SYSCALL_CONDVAR_SIGNAL: usize = 1031;
 const SYSCALL_CONDVAR_WAIT: usize = 1032;
 const SYSCALL_CREATE_DESKTOP: usize = 2000;
+const SYSCALL_CREATE_APP: usize = 2001;
+
 mod fs;
 #[cfg(feature = "board_qemu")]
 mod gui;
@@ -33,7 +35,7 @@ mod process;
 mod sync;
 mod thread;
 #[cfg(feature = "board_qemu")]
-pub use self::gui::create_desktop;
+pub use self::gui::{create_desktop, create_app};
 use fs::*;
 
 #[cfg(feature = "board_qemu")]
@@ -73,6 +75,7 @@ pub fn syscall(syscall_id: usize, args: [usize; 3]) -> isize {
         SYSCALL_CONDVAR_SIGNAL => sys_condvar_signal(args[0]),
         SYSCALL_CONDVAR_WAIT => sys_condvar_wait(args[0], args[1]),
         SYSCALL_CREATE_DESKTOP => create_desktop(),
+        SYSCALL_CREATE_APP => create_app(),
         _ => panic!("Unsupported syscall_id: {}", syscall_id),
     }
 }

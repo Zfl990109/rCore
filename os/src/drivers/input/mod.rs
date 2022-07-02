@@ -1,5 +1,5 @@
 use crate::{
-    gui::{Button, Component},
+    gui::{Button, Component, DESKTOP, SNAKEGAME},
     sync::UPIntrFreeCell,
     syscall::PAD,
 };
@@ -39,36 +39,44 @@ impl VirtIOINPUT {
 
 impl INPUTDevice for VirtIOINPUT {
     fn handle_irq(&self) {
+        let main_window = &DESKTOP.main_window;
         let mut input = self.0.exclusive_access();
         input.ack_interrupt();
         let event = input.pop_pending_event().unwrap();
-        let dtype = match Decoder::decode(
-            event.event_type as usize,
-            event.code as usize,
-            event.value as usize,
-        ) {
-            Ok(dtype) => dtype,
-            Err(_) => return,
-        };
-        match dtype {
-            virtio_input_decoder::DecodeType::Key(key, r#type) => {
-                println!("{:?} {:?}", key, r#type);
-                if r#type == KeyType::Press {
-                    let mut inner = PAD.exclusive_access();
-                    let a = inner.as_ref().unwrap();
-                    match key.to_char() {
-                        Ok(mut k) => {
-                            if k == '\r' {
-                                a.repaint(k.to_string() + "\n")
-                            } else {
-                                a.repaint(k.to_string())
-                            }
-                        }
-                        Err(_) => {}
-                    }
-                }
-            }
-            virtio_input_decoder::DecodeType::Mouse(mouse) => println!("{:?}", mouse),
-        }
+        SNAKEGAME.deal_input(event);
+        let event = input.pop_pending_event().unwrap();
+        // let dtype = match Decoder::decode(
+        //     event.event_type as usize,
+        //     event.code as usize,
+        //     event.value as usize,
+        // ) {
+        //     Ok(dtype) => dtype,
+        //     Err(_) => return,
+        // };
+        // match dtype {
+        //     virtio_input_decoder::DecodeType::Key(key, r#type) => {
+        //         println!("{:?} {:?}", key, r#type);
+        //         if r#type == KeyType::Press {
+        //             let mut inner = PAD.exclusive_access();
+        //             let a = inner.as_ref().unwrap();
+        //             match key.to_char() {
+        //                 Ok(mut k) => {
+        //                     if k == '\r' {
+        //                         a.repaint(k.to_string() + "\n")
+        //                     } else {
+        //                         a.repaint(k.to_string())
+        //                     }
+        //                 }
+        //                 Err(_) => {}
+        //             }
+        //         }
+        //     }
+        //     virtio_input_decoder::DecodeType::Mouse(mouse) => {
+        //         println!("{:?}", mouse);
+        //     },
+        // }
     }
 }
+
+
+// pub fn 

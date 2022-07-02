@@ -75,7 +75,8 @@ pub fn rust_main() -> ! {
     timer::set_next_trigger();
     board::device_init();
     fs::list_apps();
-    //syscall::create_desktop(); //for test
+    // syscall::create_desktop(); //for test
+    gui::desktop_init();
     task::add_initproc();
     *DEV_NON_BLOCKING_ACCESS.exclusive_access() = true;
     task::run_tasks();
