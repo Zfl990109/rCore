@@ -1,0 +1,10 @@
+/home/zfl/桌面/rCore/os/target/riscv64gc-unknown-none-elf/release/deps/virtio_input_decoder-7f6feba27db1cf7f.rmeta: /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/lib.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/key.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/mouse.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/decoder.rs
+
+/home/zfl/桌面/rCore/os/target/riscv64gc-unknown-none-elf/release/deps/libvirtio_input_decoder-7f6feba27db1cf7f.rlib: /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/lib.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/key.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/mouse.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/decoder.rs
+
+/home/zfl/桌面/rCore/os/target/riscv64gc-unknown-none-elf/release/deps/virtio_input_decoder-7f6feba27db1cf7f.d: /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/lib.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/key.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/mouse.rs /home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/decoder.rs
+
+/home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/lib.rs:
+/home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/key.rs:
+/home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/mouse.rs:
+/home/zfl/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/virtio-input-decoder-0.1.4/src/decoder.rs:
