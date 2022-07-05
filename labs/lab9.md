@@ -97,7 +97,7 @@
   }
   ```
 
-- 输入设备（键盘、鼠标）驱动程序，定义了 INPUTDevice 特性，包括一个 handle_irq() 函数，目前只实现了键盘按下、鼠标的中断处理（似乎 virtio-drivers 中的 pop_pending_event() 存在 bug，从事件队列中取出事件之后，又重新入队了，而事件队列只有 32 个大小的缓冲区，导致键盘和鼠标输入只会处理很少的事件）
+- 输入设备（键盘、鼠标）驱动程序，定义了 INPUTDevice 特性，包括一个 handle_irq() 函数，目前只实现了键盘按下、鼠标的中断处理（这里对键盘中断的处理有个bug，按下一个键之后，实际上是有两个事件产生，press + release，因此在做实验的时候，处理将 press 处理完毕还需要将 release 事件从队列中弹出）
 
   ```rust
   impl INPUTDevice for VirtIOINPUT {
